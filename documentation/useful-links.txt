@@ -1,0 +1,95 @@
+MATE ROVE Competition -----------------------------------------------------------------------------
+https://materovcompetition.org/
+
+
+nRF24L01 ------------------------------------------------------------------------------------------
+RF24 Library
+https://github.com/nRF24/RF24/
+
+nRF24L01-2.4GHz-HowTo
+https://arduinoinfo.mywikis.net/wiki/Nrf24L01-2.4GHz-HowTo
+
+Simple nRF24L01+ 2.4GHz transceiver demo
+https://forum.arduino.cc/t/simple-nrf24l01-2-4ghz-transceiver-demo/405123
+
+Optimized High Speed Driver for nRF24L01(+) 2.4GHz Wireless Transceiver
+https://nrf24.github.io/RF24/
+https://github.com/nRF24/RF24
+
+
+
+nRF24L01 – How It Works, Arduino Interface, Circuits, Codes
+https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
+https://github.com/JeremySCook/NRF24L01-Arduino
+
+NRF24L01 Tutorial - Arduino Wireless Communication
+https://hackaday.io/project/186003-nrf24l01-tutorial-arduino-wireless-communication
+
+How do I check 2.4GHz radio is working
+https://www.reddit.com/r/arduino/comments/gpvci9/how_do_i_check_24ghz_radio_is_working/
+
+
+Arduino Core for Adafruit Bluefruit nRF52 Boards
+https://github.com/adafruit/Adafruit_nRF52_Arduino
+
+
+
+RadioHead Packet Radio library for embedded microprocessors
+http://www.airspayce.com/mikem/arduino/RadioHead/
+https://github.com/adafruit/RadioHead
+
+
+
+BLUETOOTH -----------------------------------------------------------------------------------------
+
+Arduino-Bluetooth-Basic
+https://github.com/Mayoogh/Arduino-Bluetooth-Basic
+
+
+SMART BUOY ----------------------------------------------------------------------------------------
+https://github.com/sk-t3ch/smart-buoy
+https://www.instructables.com/Smart-Buoy/
+
+
+
+Arduino Libraries ---------------------------------------------------------------------------------
+
+Stepper
+Allows Arduino boards to control a variety of stepper motors
+https://www.arduino.cc/reference/en/libraries/stepper/
+https://github.com/arduino-libraries/Stepper
+
+AccelStepper
+Significantly improves the standard Arduino Stepper library in several ways
+https://www.arduino.cc/reference/en/libraries/accelstepper/
+https://github.com/waspinator/AccelStepper
+
+Adafruit Motor Shield V2 Library
+Library for the Adafruit Motor Shield V2 for Arduino
+https://www.arduino.cc/reference/en/libraries/adafruit-motor-shield-v2-library/
+https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library
+
+DRV8825
+Arduino library for DRV8825 stepper motor driver
+https://www.arduino.cc/reference/en/libraries/drv8825/
+https://github.com/RobTillaart/DRV8825
+
+
+RF24
+Radio driver, OSI layer 2 library for nrf24L01(+) modules. 
+https://www.arduino.cc/reference/en/libraries/rf24/
+
+NRFLite
+nRF24L01+ library requiring very little code
+Includes YouTube videos showing all available features
+https://www.arduino.cc/reference/en/libraries/nrflite/
+https://github.com/dparson55/NRFLite
+
+ArduinoBLE
+Enables Bluetooth Low Energy connectivity on the Arduino Nano 33 BLE
+https://www.arduino.cc/reference/en/libraries/arduinoble/
+https://github.com/arduino-libraries/ArduinoBLE
+
+HC-05
+An Arduino library for the HC-05 Bluetooth ITead Studio HC-05 Serial Port Module
+https://github.com/jdunmire/HC05
