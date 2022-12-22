@@ -1,27 +1,50 @@
 #include "buoy-mcu.h"
-#include <Stepper.h>
+#include <AccelStepper.h>
 
-const int stepsPerRevolution = 200;
+// Define a stepper and the pins it will use
+const int stepPin = 3;      // pin sets step size
+const int directionPin = 2; // pin sets motor direction
+const int enablePin = 5;
 
-// initialize the stepper library on pins 8 through 11:
-Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+AccelStepper stepper(AccelStepper::DRIVER, stepPin, directionPin);
 
 void init_motor()
 {
     MCU_serialPrint("setup motor");
-    myStepper.setSpeed(60); // set the speed at 60 rpm:
+    stepper.setEnablePin(enablePin);
+    stepper.setPinsInverted(false, false, true);
+    stepper.enableOutputs();
+
+    stepper.setAcceleration(50); // desired acceleration in steps per second per second
+    stepper.setMaxSpeed(1000);   // desired maximum speed in steps per second
+    stepper.setSpeed(0);         // desired constant speed in steps per second
+}
+
+void motor_resetPosition()
+{
+    // resets the current position of the motor to 0
+    stepper.setCurrentPosition(0);
 }
 
 void motor_clockwise()
 {
-    // clockwise step motor
+    /*
+        Clockwise moves the motor to the target position (with acceleration/deceleration)
+        With a 16MHz Arduino (such as Uno or Mega) the AccelStepper max rpm is roughly 4000 steps per second.
+        Note: code blocking until position reached.
+    */
     MCU_serialPrint("cw");
-    myStepper.step(stepsPerRevolution);
+    stepper.runToNewPosition(100); // Negative is anticlockwise from the 0 position
 }
 
 void motor_counterclockwise()
 {
-    // counterclockwise step motor
+    /*
+        Counter-clockwise moves the motor to the target position (with acceleration/deceleration)
+        With a 16MHz Arduino (such as Uno or Mega) the AccelStepper max rpm is roughly 4000 steps per second.
+        Note: code blocking until position reached.
+        
+    */
     MCU_serialPrint("ccw");
-    myStepper.step(-stepsPerRevolution);
+    stepper.runToNewPosition(-100); // Negative is anticlockwise from the 0 position
 }
