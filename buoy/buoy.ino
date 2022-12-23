@@ -1,3 +1,11 @@
+/*
+    File ........ buoy.ino
+    Author ...... Tektronica
+    Type ........ Application layer
+
+    wokwi example: https://wokwi.com/projects/351808292414030415
+*/
+
 #include "buoy.h"
 #include "buoy-mcu.h"
 #include "buoy-motor.h"
@@ -13,27 +21,27 @@ void setup()
 
 void loop()
 {
-    switch (status)
-    {
+    switch (status) {
     case SURFACE:
         transmit();
-        status = DESCEND;
         break;
 
     case UNDERWATER:
         dataCollect();
-        status = ASCEND;
         break;
 
     case ASCEND:
         ascend();
-        status = SURFACE;
         break;
 
     case DESCEND:
         descend();
-        status = UNDERWATER;
         break;
+
+    default:
+    {
+        // no default for now
+    }
     }
 }
 
@@ -41,25 +49,45 @@ void transmit()
 {
     MCU_serialPrint("transmit");
     MCU_serialPrint(MCU_getTimeElapsed());
+
+    // once data has transmitted, go back underwater
+    status = DESCEND;
 }
 
 void dataCollect()
 {
     MCU_serialPrint("collect");
+
+    // once data collection complete, go back to the surface
+    status = ASCEND;
 }
 
 void descend()
 {
-    // step one revolution  in one direction:
-    MCU_serialPrint("descending");
-    motor_counterclockwise();
-    delay(500);
+    // motor will turn clockwise until condition met
+    // once complete or has been interrupted, status will change
+    if (!motor_clockwise()) {
+        MCU_serialPrint("underwater");
+
+        // once descended, collect data underwater
+        status = UNDERWATER;
+
+        // delay after descent complete
+        delay(500);
+    }
 }
 
 void ascend()
 {
-    // step one revolution in the other direction:
-    MCU_serialPrint("ascending");
-    motor_clockwise();
-    delay(500);
+    // motor will turn counter-clockwise until condition met
+    // once complete or has been interrupted, status will change
+    if (!motor_counterclockwise()) {
+        MCU_serialPrint("reached surface");
+
+        // once ascended, transmit data at surface
+        status = SURFACE;
+
+        // delay after descent complete
+        delay(500);
+    }
 }

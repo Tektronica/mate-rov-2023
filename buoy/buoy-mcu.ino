@@ -1,5 +1,11 @@
+/*
+    File ........ buoy-mcu.ino
+    Author ...... Tektronica
+    Type ........ MCU layer (Arduino)
+*/
+
 // constants --------------------------------------------------------------------------------------
-unsigned long startMillis;
+unsigned long startMillis; // "technically" a constant
 
 // variables --------------------------------------------------------------------------------------
 unsigned long currentMillis;

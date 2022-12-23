@@ -3,11 +3,11 @@
 
 // initialize the motor
 void init_motor();
-// resets the current position of the motor to 0
-void motor_resetPosition();
+// run motor with acceleration to a target
+void motor_run();
 // command motor to rotate clockwise
-void motor_clockwise();
+bool motor_clockwise();
 // command motor to rotate counter-clockwise
-void motor_counterclockwise();
+bool motor_counterclockwise();
 
 #endif /* BUOY_MOTOR_H_ */
