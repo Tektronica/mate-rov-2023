@@ -3,19 +3,21 @@
     Author ...... Tektronica
     Type ........ Application layer
 
-    wokwi example: https://wokwi.com/projects/351808292414030415
+    wokwi example:  https://wokwi.com/projects/351808292414030415
 */
 
 #include "buoy.h"
 #include "buoy-mcu.h"
+#include "buoy-radio.h"
 #include "buoy-motor.h"
 
 enum Status status;
 
 void setup()
 {
-    init_MCU();
-    init_motor();
+    init_MCU();       // initialize board and Arduino
+    init_radio();     // initialize radio
+    init_motor();     // initialize stepper motor
     status = SURFACE; // set initial buoy status
 }
 
@@ -39,16 +41,17 @@ void loop()
         break;
 
     default:
-    {
         // no default for now
-    }
+        break;
     }
 }
 
 void transmit()
 {
-    MCU_serialPrint("transmit");
-    MCU_serialPrint(MCU_getTimeElapsed());
+    radio_wake();                     // turn on radio
+    MCU_serialPrint("transmit");      // log serial
+    radio_send(MCU_getTimeElapsed()); // transmit data
+    radio_sleep();                   // once transmitted, sleep the radio
 
     // once data has transmitted, go back underwater
     status = DESCEND;

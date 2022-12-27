@@ -8,7 +8,7 @@
 
 // heartbeat --------------------------------------------------------------------------------------
 #define heartbeat_pin 13        // heartbeat LED pin
-bool heart_beat_status = false; // heartbeat state
+bool heartbeat_status = false; // heartbeat state
 
 // constants --------------------------------------------------------------------------------------
 unsigned long startMillis; // "technically" a constant
@@ -46,8 +46,8 @@ void init_watchdog()
 // heartbeat
 ISR(WDT_vect)
 {
-    heart_beat_status = !heart_beat_status;         // flip heartbeat state
-    digitalWrite(heartbeat_pin, heart_beat_status); // write to pin
+    heartbeat_status = !heartbeat_status;         // flip heartbeat state
+    digitalWrite(heartbeat_pin, heartbeat_status); // write to pin
 }
 
 // ------------------------------------------------------------------------------------------------
