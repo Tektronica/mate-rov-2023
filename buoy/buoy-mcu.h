@@ -4,7 +4,8 @@
 // initialize the arduino MCU and peripherals
 void init_MCU();
 // wrapper for Serial.println();
-void MCU_serialPrint(char message);
+template <typename T>
+void MCU_serialPrint(T message);
 // get elapsed time since initialization
 unsigned long MCU_getTimeElapsed();
 
