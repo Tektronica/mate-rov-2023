@@ -19,7 +19,6 @@ void initializeSerial();
 void initializeRadio();
 void setRadioAddresses();
 void sendMessage(const char *message);
-void receiveMessage(char *messageBuffer);
 void sendResponse(const char *response);
 void waitForMessage(char *messageBuffer);
 
@@ -107,16 +106,6 @@ bool sendMessage(const char *message)
     return success;
 }
 
-void receiveMessage(char *messageBuffer)
-{
-    // Receive a message
-    uint8_t pipe;
-    if (radio.available(&pipe))
-    {
-        radio.read(messageBuffer, MESSAGE_SIZE);
-    }
-}
-
 bool sendResponse(const char *response)
 {
     // Send a response
@@ -128,12 +117,12 @@ bool sendResponse(const char *response)
     return success;
 }
 
-
 void waitForMessage(char *messageBuffer)
 {
     // Wait for a message
     uint8_t pipe;
     while (!radio.available(&pipe))
-        ;
-    radio.read(messageBuffer, MESSAGE_SIZE);
+    {
+        radio.read(messageBuffer, MESSAGE_SIZE);
+    }
 }

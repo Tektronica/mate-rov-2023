@@ -6,7 +6,7 @@
 
 const uint8_t MESSAGE_SIZE = 32;
 const uint8_t MAX_RETRIES = 5;
-const uint8_t MESSAGE_TIMEOUT = 5000; // 5 second timeout for receiving a message
+const uint32_t MESSAGE_TIMEOUT = 5000; // 5 second timeout for receiving a message
 
 // Define the radio number and pipe addresses for each device
 const uint8_t RADIO_NUMBER = 0;              // Radio number used by the device
