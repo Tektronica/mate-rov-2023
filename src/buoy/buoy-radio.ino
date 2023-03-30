@@ -1,14 +1,3 @@
-/*
-    File ........ buoy-tx.ino
-    Author ...... Tektronica
-    Type ........ Peripheral layer
-
-    Example:        pingpair_sleepy.ino
-    https://nrf24.github.io/RF24/examples_2old_backups_2pingpair_sleepy_2pingpair_sleepy_8ino-example.html
-    https://nrf24.github.io/RF24/examples_2GettingStarted_2GettingStarted_8ino-example.html
-    https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
-    https://lastminuteengineers.com/nrf24l01-arduino-wireless-communication/
-*/
 
 #include "buoy-mcu.h"
 
@@ -16,12 +5,16 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-#define CE_PIN 9
-#define CSN_PIN 10
+#define CE_PIN 10
+#define CSN_PIN 11
 
-// Single radio pipe address for the 2 modules to communicate
-// TX "address" writes over "pipe" and the RX must know that address
-const uint64_t slaveAddress = 0xE8E8F0F0E1LL;
+const uint8_t MAX_RETRIES = 5;
+const uint32_t MESSAGE_TIMEOUT = 5000; // 5 second timeout for receiving a message
+
+// Define the radio number and pipe addresses for each device
+const uint8_t RADIO_NUMBER = 0;              // Radio number used by the device
+const uint64_t MASTER_PIPE = 0xE8E8F0F0E1LL; // Master pipe address
+const uint64_t SLAVE_PIPE = 0xE8E8F0F0E2LL;  // Slave pipe address
 
 RF24 radio(CE_PIN, CSN_PIN); // create new instance of driver
 
@@ -29,10 +22,27 @@ void init_radio()
 {
     MCU_serialPrint("setup transmit");
 
-    radio.begin();                       // begin operation of the chip.
-    radio.setDataRate(RF24_250KBPS);     // Set the transmission data rate.
-    radio.setRetries(15, 15);            // retries and delay upon failed submit.
-    radio.openWritingPipe(slaveAddress); // open writing pipe to destination
+    // Initialize the RF24 radio
+    radio.begin(); // begin operation of the chip.
+    radio.setPALevel(RF24_PA_MIN);
+    radio.setDataRate(RF24_250KBPS);
+    radio.setAutoRetransmit(MAX_RETRIES, 10);
+    setRadioAddresses();
+}
+
+void setRadioAddresses()
+{
+    // Set the radio addresses
+    if (RADIO_NUMBER == 0)
+    {
+        radio.openWritingPipe(MASTER_PIPE);
+        radio.openReadingPipe(1, SLAVE_PIPE);
+    }
+    else
+    {
+        radio.openWritingPipe(SLAVE_PIPE);
+        radio.openReadingPipe(1, MASTER_PIPE);
+    }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -55,18 +65,23 @@ void radio_send(T message)
     // switch to transmit mode
     radio.stopListening();
 
+    // Wait for the radio to switch to transmit mode
+    delay(5);
+
     // write to the open writing pipe
-    bool rslt = radio.write(&message, sizeof(message));
-    // Always use sizeof() as it gives the size as the number of bytes.
-    // For example if dataToSend was an int sizeof() would correctly return 2
+    bool rslt = radio.write(&message, sizeof(T));
 
-    MCU_serialPrint((String) "Data Sent " + message);
+    MCU_serialPrint("Data Sent");
 
-    // true if the payload was delivered successfully false if not 
-    if (rslt) {
+    if (rslt)
+    {
+        // true if the payload was delivered successfully
         MCU_serialPrint("Acknowledge received");
-    } else {
-        MCU_serialPrint("Tx failed");
+    }
+    else
+    {
+        // false if no ACK was returned
+        MCU_serialPrint("No ACK returned");
     }
 }
 
@@ -75,16 +90,22 @@ unsigned long radio_read()
     // switch to receive mode
     radio.startListening();
 
-    unsigned long data;
+    unsigned long data = 0;
 
-    // if there is data ready
-    if (radio.available()) {
-
-        while (radio.available()) {
+    unsigned long start_time = millis();
+    while (millis() - start_time < MESSAGE_TIMEOUT)
+    {
+        // if there is data ready
+        if (radio.available())
+        {
             // Read payload data from the RX FIFO buffer(s)
             radio.read(&data, sizeof(data));
-            return data;
+            break; // exit loop if data is received
         }
     }
-    return 0;
+
+    // switch back to transmit mode
+    radio.stopListening();
+
+    return data;
 }

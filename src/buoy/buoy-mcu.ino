@@ -7,11 +7,11 @@
 #include <avr/wdt.h> //include avr Watchdog timer liberary
 
 // heartbeat --------------------------------------------------------------------------------------
-#define heartbeat_pin 13        // heartbeat LED pin
+#define heartbeat_pin 13       // heartbeat LED pin
 bool heartbeat_status = false; // heartbeat state
 
 // constants --------------------------------------------------------------------------------------
-unsigned long startMillis; // "technically" a constant
+static unsigned long startMillis; // "technically" a constant
 
 // variables --------------------------------------------------------------------------------------
 unsigned long currentMillis;
@@ -24,17 +24,30 @@ unsigned long txIntervalMillis = 1000; // send once per second
 void init_watchdog();
 
 // ------------------------------------------------------------------------------------------------
+
+// initialize the MCU
 void init_MCU()
 {
     pinMode(heartbeat_pin, OUTPUT); // Set LED pin as an OUTPUT
-    init_watchdog();                // watchdog interrupt
 
     Serial.begin(9600); // initialize the serial port
-    while (!Serial) {}; // await serial interface
+    while (!Serial)
+    {
+        // await serial interface
+    };
+    init_watchdog(); // watchdog interrupt
 }
 
 // ------------------------------------------------------------------------------------------------
 
+// watchdog interrupt
+ISR(WDT_vect)
+{
+    heartbeat_status = !heartbeat_status;          // flip heartbeat state
+    digitalWrite(heartbeat_pin, heartbeat_status); // write to pin
+}
+
+// initialize watchdog
 void init_watchdog()
 {
     cli();                                            // Disable all interrupt occurring
@@ -43,23 +56,19 @@ void init_watchdog()
     sei();
 }
 
-// heartbeat
-ISR(WDT_vect)
-{
-    heartbeat_status = !heartbeat_status;         // flip heartbeat state
-    digitalWrite(heartbeat_pin, heartbeat_status); // write to pin
-}
-
 // ------------------------------------------------------------------------------------------------
+// print message to serial port
 template <typename T>
 void MCU_serialPrint(T message)
 {
-    // template <typename T>
     Serial.println(message);
 }
 
+// get elapsed time since program started
 unsigned long MCU_getTimeElapsed()
 {
+    static unsigned long currentMillis;
+    static unsigned long elapsedMillis;
     currentMillis = millis();
     elapsedMillis = currentMillis - startMillis;
 
